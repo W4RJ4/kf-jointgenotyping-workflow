@@ -1,6 +1,6 @@
 cwlVersion: v1.0
 class: CommandLineTool
-id: gatk_gathergvcfs
+id: gather_gvcfs
 requirements:
 - class: ShellCommandRequirement
 - class: ResourceRequirement
@@ -12,25 +12,27 @@ requirements:
 baseCommand: []
 arguments:
 - position: 0
+  prefix: ''
   shellQuote: false
   valueFrom: /gatk/gatk-launch --javaOptions "-Xmx6g -Xms6g" GatherVcfsCloud --ignoreSafetyChecks
-    --gatherType BLOCK --output sites_only.vcf.gz
+    --gatherType BLOCK --output $(inputs.input_vcfs[0].basename)
 - position: 2
+  prefix: ''
   shellQuote: false
-  valueFrom: '&& /tabix/tabix sites_only.vcf.gz'
+  valueFrom: "&& /tabix/tabix $(inputs.input_vcfs[0].basename)"
 inputs:
   input_vcfs:
     type:
       type: array
       items: File
       inputBinding:
-        prefix: -I
+        prefix: "-I"
     inputBinding:
       position: 1
 outputs:
   output:
     type: File
     outputBinding:
-      glob: sites_only.vcf.gz
+      glob: "$(inputs.input_vcfs[0].basename)"
     secondaryFiles:
-    - .tbi
+    - ".tbi"
