@@ -7,7 +7,6 @@ requirements:
   ramMin: 1000
   coresMin: 1
 - class: DockerRequirement
-  dockerImageId: ad2043b902a2
   dockerPull: images.sbgenomics.com/thedzo/bedtools:2.25.0
 - class: InitialWorkDirRequirement
   listing: []
