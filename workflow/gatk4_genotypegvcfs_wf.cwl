@@ -6,20 +6,16 @@ requirements:
 - class: ScatterFeatureRequirement
 - class: MultipleInputFeatureRequirement
 inputs:
-  scatter_intervals:
-    type: File
-  gvcf_divide_intervals:
-    type: File?
-  ref_fasta:
-    type: File
+  scatter_intervals: File
+  gvcf_divide_intervals: File?
+  ref_fasta: File
   input_vcfs:
     type:
       type: array
       items: File
       inputBinding:
         prefix: "-V"
-  dbsnp_vcf:
-    type: File
+  dbsnp_vcf: File
 outputs:
   sites_only_vcf:
     outputSource:
@@ -36,14 +32,10 @@ outputs:
 steps:
   select_bed_v2:
     in:
-    - id: gvcf
-      source:
-      - input_vcfs
-    - id: bed_files
-      source:
-      - sbg_prepare_intervals/intervals
+      gvcf: input_vcfs
+      bed_files: sbg_prepare_intervals/intervals
     out:
-    - id: output_bed_file
+      - id: output_bed_file
     run: "../tools/select_bed_v2.cwl"
     label: select bed v2
     hints:
@@ -57,83 +49,65 @@ steps:
       - input_vcfs
       - gather_gvcfs/output
     out:
-    - id: output
+      - id: output
     run: "../tools/vcf_keeper.cwl"
     label: vcf_keeper
   create_vcf_list:
     in:
-    - id: input_vcfs
-      source:
-      - input_vcfs
+      input_vcfs: input_vcfs
     out:
-    - id: vcf_list
+      - id: vcf_list
     run: "../tools/create_vcf_list.cwl"
     label: create_vcf_list
   gatk_import_genotype_filtergvcf_merge:
     in:
-    - id: interval
-      source: dynamicallycombineintervals_1/out_intervals
-    - id: ref_fasta
-      source: ref_fasta
-    - id: dbsnp_vcf
-      source: dbsnp_vcf
-    - id: input_vcfs_list
-      source: create_vcf_list/vcf_list
+      interval: dynamicallycombineintervals_1/out_intervals
+      ref_fasta: ref_fasta
+      dbsnp_vcf: dbsnp_vcf
+      input_vcfs_list: create_vcf_list/vcf_list
     out:
-    - id: variant_filtered_vcf
-    - id: sites_only_vcf
+      - id: variant_filtered_vcf
+      - id: sites_only_vcf
     run: "../tools/gatk_import_genotype_filtergvcf_merge.cwl"
     label: gatk_import_genotype_filtergvcf_merge
     scatter:
     - interval
   dynamicallycombineintervals_1:
     in:
-    - id: interval
-      source: bedtools_intersect/output_file
-    - id: input_vcfs
-      source:
-      - input_vcfs
+      interval: bedtools_intersect/output_file
+      input_vcfs: input_vcfs
     out:
-    - id: out_intervals
+      - id: out_intervals
     run: "../tools/script_dynamicallycombineintervals.cwl"
     label: dynamicallycombineintervals
   gather_gvcfs:
     in:
-    - id: input_vcfs
-      source:
-      - gatk_import_genotype_filtergvcf_merge/variant_filtered_vcf
+      input_vcfs: gatk_import_genotype_filtergvcf_merge/variant_filtered_vcf
     out:
-    - id: output
+      - id: output
     run: "../tools/gather_gvcfs.cwl"
     label: gather_gvcfs
   sbg_prepare_intervals:
     in:
-    - id: bed_file
-      source: gvcf_divide_intervals
-    - id: split_mode
-      default: File per interval
+      bed_file: gvcf_divide_intervals
+      split_mode: File per interval
     out:
-    - id: intervals
+      - id: intervals
     run: "../tools/sbg_prepare_intervals.cwl"
     label: SBG Prepare Intervals
   bedtools_intersect:
     in:
-    - id: input_files_b
-      source:
-      - select_bed_v2/output_bed_file
-    - id: input_file_a
-      source: scatter_intervals
+      input_files_b: select_bed_v2/output_bed_file
+      input_file_a: scatter_intervals
     out:
-    - id: output_file
+      - id: output_file
     run: "../tools/bedtools_intersect.cwl"
     label: BEDTools Intersect
   gather_gvcfs_1:
     in:
-    - id: input_vcfs
-      source:
-      - gatk_import_genotype_filtergvcf_merge/sites_only_vcf
+      input_vcfs: gatk_import_genotype_filtergvcf_merge/sites_only_vcf
     out:
-    - id: output
+      - id: output
     run: "../tools/gather_gvcfs.cwl"
     label: gather_gvcfs
 hints:
