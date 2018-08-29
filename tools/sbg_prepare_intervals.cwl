@@ -2,6 +2,7 @@ cwlVersion: v1.0
 class: CommandLineTool
 id: sbg_prepare_intervals
 requirements:
+- class: InlineJavascriptRequirement
 - class: ShellCommandRequirement
 - class: ResourceRequirement
   ramMin: 1000
@@ -327,6 +328,6 @@ outputs:
   intervals:
     doc: Array of BED files genereted as per selected Split Mode.
     label: Intervals
-    type: File[]?
+    type: File[]
     outputBinding:
       glob: Intervals/*.bed

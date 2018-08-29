@@ -2,6 +2,7 @@ cwlVersion: v1.0
 class: CommandLineTool
 id: gatk_gathertranches
 requirements:
+  - class: InlineJavascriptRequirement
   - class: DockerRequirement
     dockerPull: 'kfdrc/gatk:4.beta.5'
   - class: ShellCommandRequirement
