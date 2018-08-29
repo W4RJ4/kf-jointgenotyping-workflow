@@ -5,6 +5,7 @@ id: gatk4-genotypegvcfs-wf
 requirements:
 - class: ScatterFeatureRequirement
 - class: MultipleInputFeatureRequirement
+- class: InlineJavascriptRequirement
 inputs:
   scatter_intervals: File
   gvcf_divide_intervals: File?

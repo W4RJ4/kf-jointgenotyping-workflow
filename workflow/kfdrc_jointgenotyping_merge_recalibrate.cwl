@@ -3,6 +3,7 @@ class: Workflow
 id: kfdrc-jointgenotyping-intervals
 requirements:
 - class: ScatterFeatureRequirement
+- class: InlineJavascriptRequirement
 inputs:
   reference_dict: File
   hapmap_resource_vcf: File
@@ -106,7 +107,7 @@ steps:
   gatk_finalgathervcf:
     in:
       input_vcfs: gatk_applyrecalibration/recalibrated_vcf
-      output_vcf_basename: output_vcf_basename
+      output_vcf_name: output_vcf_basename
     out:
       - id: output
     run: "../tools/gatk_finalgathervcf.cwl"

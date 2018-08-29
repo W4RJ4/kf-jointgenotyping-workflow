@@ -3,12 +3,15 @@ cwlVersion: v1.0
 id: gvcf_splitter
 inputs:
     bed_file: File?
-    variant: File
+    variant: 
+      type: File
+      secondaryFiles:
+      - '.tbi'
 outputs:
   - id: select_variants_vcf
     outputSource:
       - gatk_4_0_selectvariants/select_variants_vcf
-    type: File
+    type: File[]
 steps:
   gatk_4_0_selectvariants:
     in:
@@ -23,7 +26,8 @@ steps:
   sbg_prepare_intervals:
     in:
         bed_file: bed_file
-        split_mode: File per interval
+        split_mode:
+          valueFrom: File per interval
     out:
       - id: intervals
     run: '../tools/sbg_prepare_intervals.cwl'
@@ -33,3 +37,4 @@ hints:
     value: m4.10xlarge;ebs-gp2;256
 requirements:
   - class: ScatterFeatureRequirement
+  - class: InlineJavascriptRequirement
