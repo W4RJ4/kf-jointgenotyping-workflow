@@ -31,4 +31,3 @@ outputs:
         = inputs.bed_files[i].path\n        var bed_name = bed_path.split('/').pop().split('.')[0]\n
         \       if (bed_name == gvcf_interval){\n            specific_bed = bed_path.split('/').pop()\n
         \           return specific_bed\n        }\n    }\n}"
-      outputEval: "$(inheritMetadata(self, inputs.gvcf))"
