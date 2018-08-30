@@ -30,6 +30,15 @@ inputs:
       separate: false
       shellQuote: false
     label: Write A, B, overlap and additional
+  input_files_b:
+    type: File[]
+    inputBinding:
+      position: 100
+      prefix: "-b"
+      itemSeparator": " "
+      separate: true
+      shellQuote: false
+    label: Input file A
   input_file_a:
     type: File
     inputBinding:
