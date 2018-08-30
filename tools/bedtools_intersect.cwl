@@ -82,11 +82,6 @@ outputs:
             else
                 return new_filename.slice(new_filename.length - MAX_LEN)
         }
-      outputEval: |-
-        ${
-            return inheritMetadata(self, inputs.input_file_a)
-
-        }
 stdout: |-
   ${
       //sufix = "test";
