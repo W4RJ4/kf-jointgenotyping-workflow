@@ -91,7 +91,8 @@ steps:
   sbg_prepare_intervals:
     in:
       bed_file: gvcf_divide_intervals
-      split_mode: File per interval
+      split_mode: 
+        default: File per interval
     out:
       - id: intervals
     run: "../tools/sbg_prepare_intervals.cwl"
