@@ -13,7 +13,8 @@ baseCommand: []
 arguments:
 - position: 0
   shellQuote: false
-  valueFrom: /gatk --java-options "-Xms4g" GenomicsDBImport --genomicsdb-workspace-path
+  valueFrom: >- 
+    /gatk --java-options "-Xms4g" GenomicsDBImport --genomicsdb-workspace-path
     genomicsdb --batch-size 50 -L $(inputs.interval.path) --reader-threads 16 -ip
     5
 - position: 2
