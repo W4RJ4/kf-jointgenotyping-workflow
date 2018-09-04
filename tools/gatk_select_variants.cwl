@@ -4,9 +4,7 @@ class: CommandLineTool
 id: gatk_4_0_selectvariants
 requirements:
 - class: InlineJavascriptRequirement
-  expressionLib: 
-      - |-
-
+  expressionLib:  - |-
         var setMetadata = function(file, metadata) {
             if (!('metadata' in file))
                 file['metadata'] = metadata;
@@ -153,5 +151,4 @@ outputs:
           if (inputs.intervals_file)
           out.metadata['interval_used'] = inputs.intervals_file.basename
           return out
-
       }
