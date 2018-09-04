@@ -14,11 +14,14 @@ arguments:
 - position: 0
   shellQuote: false
   valueFrom: >- 
-    /gatk --java-options "-Xms4g" GenomicsDBImport --genomicsdb-workspace-path
-    genomicsdb --batch-size 50 -L $(inputs.interval.path) --reader-threads 16 -ip
-    5
+    /gatk --java-options "-Xms4g"
+    GenomicsDBImport
+    --genomicsdb-workspace-path genomicsdb 
+    --batch-size 50 
+    -L $(inputs.interval.path) 
+    --reader-threads 16 
+    -ip 5
 - position: 2
-  prefix: ''
   shellQuote: false
   valueFrom: |-
     && tar -cf genomicsdb.tar genomicsdb
@@ -26,7 +29,6 @@ arguments:
     /gatk --java-options "-Xmx3g -Xms3g"  VariantFiltration  --filter-expression "ExcessHet > 54.69" --filter-name ExcessHet -O $(inputs.input_vcfs_list.path.split('/').pop().split('.')[0]).variant_filtered.vcf.gz -V output.vcf.gz
     java -Xmx3g -Xms3g -jar /picard.jar MakeSitesOnlyVcf INPUT=$(inputs.input_vcfs_list.path.split('/').pop().split('.')[0]).variant_filtered.vcf.gz OUTPUT=$(inputs.input_vcfs_list.path.split('/').pop().split('.')[0]).sites_only.variant_filtered.vcf.gz
 - position: 1
-  prefix: ''
   separate: false
   shellQuote: false
   valueFrom: |-
@@ -34,29 +36,22 @@ arguments:
         return "$(cat " + inputs.input_vcfs_list.path + ")"
     }
 inputs:
-  input_vcfs_list:
-    type: File
-  interval:
-    type: File
+  input_vcfs_list: File
+  interval: File
   ref_fasta:
     type: File
-    secondaryFiles:
-    - "^.dict"
-    - ".fai"
+    secondaryFiles: ["^.dict", ".fai"]
   dbsnp_vcf:
     type: File
-    secondaryFiles:
-    - ".idx"
+    secondaryFiles: [".idx"]
 outputs:
   variant_filtered_vcf:
     type: File
     outputBinding:
       glob: "$(inputs.input_vcfs_list.path.split('/').pop().split('.')[0]).variant_filtered.vcf.gz"
-    secondaryFiles:
-    - ".tbi"
+    secondaryFiles: [".tbi"]
   sites_only_vcf:
     type: File
     outputBinding:
       glob: "$(inputs.input_vcfs_list.path.split('/').pop().split('.')[0]).sites_only.variant_filtered.vcf.gz"
-    secondaryFiles:
-    - ".tbi"
+    secondaryFiles: [".tbi"]
