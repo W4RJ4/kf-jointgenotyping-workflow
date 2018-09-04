@@ -143,12 +143,12 @@ outputs:
     type: File
     outputBinding:
       glob: "*.vcf.gz"
-    secondaryFiles:
-    - ".tbi"
-    outputEval: |-
-      ${
+      outputEval: |-
+       ${
           var out = inheritMetadata(self[0], inputs.variant)
           if (inputs.intervals_file)
           out.metadata['interval_used'] = inputs.intervals_file.basename
           return out
-      }
+       }
+    secondaryFiles:
+    - ".tbi"
