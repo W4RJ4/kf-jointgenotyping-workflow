@@ -35,7 +35,7 @@ inputs:
     inputBinding:
       position: 100
       prefix: "-b"
-      itemSeparator": " "
+      itemSeparator: " "
       separate: true
       shellQuote: false
     label: Input file A
