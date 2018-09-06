@@ -4,7 +4,9 @@ class: CommandLineTool
 id: gatk_4_0_selectvariants
 requirements:
 - class: InlineJavascriptRequirement
-  expressionLib:  - |-
+  expressionLib: 
+      - |-
+
         var setMetadata = function(file, metadata) {
             if (!('metadata' in file))
                 file['metadata'] = metadata;
@@ -142,13 +144,14 @@ outputs:
     label: Select Variants VCF
     type: File
     outputBinding:
-      glob: "*.vcf.gz"
       outputEval: |-
        ${
           var out = inheritMetadata(self[0], inputs.variant)
           if (inputs.intervals_file)
           out.metadata['interval_used'] = inputs.intervals_file.basename
           return out
+
        }
+      glob: "*.vcf.gz"
     secondaryFiles:
     - ".tbi"
