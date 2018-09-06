@@ -21,6 +21,7 @@ baseCommand:
 inputs:
   input_vcfs:
     type: File[]
+    secondaryFiles: [.tbi]
 outputs:
   vcf_list:
     type: File
