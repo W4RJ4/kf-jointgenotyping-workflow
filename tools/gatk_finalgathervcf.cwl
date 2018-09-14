@@ -18,7 +18,7 @@ arguments:
       GatherVcfs
       --ignoreSafetyChecks
       --gatherType BLOCK
-      --output $(inputs.output_vcf_name)
+      --output $(inputs.output_vcf_name + ".vcf.gz")
 inputs:
   input_vcfs:
     type:
