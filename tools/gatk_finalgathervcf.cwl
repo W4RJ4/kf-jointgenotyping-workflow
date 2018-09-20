@@ -18,7 +18,7 @@ arguments:
       GatherVcfs
       --ignoreSafetyChecks
       --gatherType BLOCK
-      --output $(inputs.output_vcf_name + ".vcf.gz")
+      --output $(inputs.output_vcf_name)
 inputs:
   input_vcfs:
     type:
@@ -34,4 +34,3 @@ outputs:
     type: File
     outputBinding:
       glob: $(inputs.output_vcf_name)
-    secondaryFiles: [.tbi]
