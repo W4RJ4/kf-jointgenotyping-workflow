@@ -107,7 +107,7 @@ steps:
   gatk_finalgathervcf:
     in:
       input_vcfs: gatk_applyrecalibration/recalibrated_vcf
-      output_vcf_name: output_vcf_basename
+      output_vcf_basename: output_vcf_basename
     out:
       - id: output
     run: "../tools/gatk_gathervcfscloud.cwl"
