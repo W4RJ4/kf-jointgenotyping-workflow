@@ -110,7 +110,7 @@ steps:
       output_vcf_name: output_vcf_basename
     out:
       - id: output
-    run: "../tools/gatk_finalgathervcf.cwl"
+    run: "../tools/gatk_gathervcfscloud.cwl"
     requirements: []
   picard_collectvariantcallingmetrics:
     in:
