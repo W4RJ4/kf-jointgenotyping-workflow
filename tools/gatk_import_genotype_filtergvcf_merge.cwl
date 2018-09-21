@@ -2,63 +2,54 @@ cwlVersion: v1.0
 class: CommandLineTool
 id: gatk_import_genotype_filtergvcf_merge
 requirements:
-- class: ShellCommandRequirement
-- class: ResourceRequirement
-  ramMin: 16000
-  coresMin: 1
-- class: DockerRequirement
-  dockerPull: images.sbgenomics.com/bogdang/gatk-picard:4.0.3
-- class: InlineJavascriptRequirement
+  - class: DockerRequirement
+    dockerPull: 'zhangb1/broad-gatk4.beta.5-picard'
+  - class: ShellCommandRequirement
+  - class: InlineJavascriptRequirement
+  - class: ResourceRequirement
+    ramMin: 14000
+    coresMin: 2
 baseCommand: []
 arguments:
-- position: 0
-  shellQuote: false
-  valueFrom: >- 
-    /gatk --java-options "-Xms4g"
-    GenomicsDBImport
-    --genomicsdb-workspace-path genomicsdb 
-    --batch-size 50 
-    -L $(inputs.interval.path) 
-    --reader-threads 16 
-    -ip 5
-- position: 2
-  shellQuote: false
-  valueFrom: >-
-    && tar -cf genomicsdb.tar genomicsdb
-    
-    /gatk --java-options "-Xmx16g -Xms5g"
-    GenotypeGVCFs
-    -R $(inputs.ref_fasta.path)
-    -O output.vcf.gz
-    -D $(inputs.dbsnp_vcf.path)
-    -G StandardAnnotation
-    --only-output-calls-starting-in-intervals
-    -new-qual
-    -V gendb://genomicsdb
-    -L $(inputs.interval.path)
-    
-    /gatk --java-options "-Xmx3g -Xms3g"
-    VariantFiltration
-    --filter-expression "ExcessHet > 54.69"
-    --filter-name ExcessHet
-    -O $(inputs.input_vcfs_list.path.split('/').pop().split('.')[0]).variant_filtered.vcf.gz
-    -V output.vcf.gz
-    
-    java -Xmx3g -Xms3g -jar /picard.jar
-    MakeSitesOnlyVcf
-    INPUT=$(inputs.input_vcfs_list.path.split('/').pop().split('.')[0]).variant_filtered.vcf.gz
-    OUTPUT=$(inputs.input_vcfs_list.path.split('/').pop().split('.')[0]).sites_only.variant_filtered.vcf.gz
-    
-- position: 1
-  separate: false
-  shellQuote: false
-  valueFrom: |-
-    ${
-        return "$(cat " + inputs.input_vcfs_list.path + ")"
-    }
-    
+  - position: 0
+    shellQuote: false
+    valueFrom: >-
+      /gatk/gatk-launch --javaOptions "-Xms4g"
+      GenomicsDBImport
+      --genomicsDBWorkspace genomicsdb
+      --batchSize 50
+      -L $(inputs.interval.path)
+      --readerThreads 16
+      -ip 5
+  - position: 2
+    shellQuote: false
+    valueFrom: >-
+      && tar -cf genomicsdb.tar genomicsdb
+      
+      /gatk/gatk-launch --javaOptions "-Xmx16g -Xms5g"
+      GenotypeGVCFs
+      -R $(inputs.ref_fasta.path)
+      -O output.vcf.gz
+      -D $(inputs.dbsnp_vcf.path)
+      -G StandardAnnotation
+      --onlyOutputCallsStartingInIntervals
+      -newQual
+      -V gendb://genomicsdb
+      -L $(inputs.interval.path)
+      
+      /gatk/gatk-launch --javaOptions "-Xmx3g -Xms3g" 
+      VariantFiltration 
+      --filterExpression "ExcessHet > 54.69"
+      --filterName ExcessHet
+      -O variant_filtered.vcf.gz
+      -V output.vcf.gz
+
+      java -Xmx3g -Xms3g -jar /picard.jar
+      MakeSitesOnlyVcf
+      INPUT=variant_filtered.vcf.gz
+      OUTPUT=sites_only.variant_filtered.vcf.gz
+
 inputs:
-  input_vcfs_list: File
   interval: File
   ref_fasta:
     type: File
@@ -66,14 +57,23 @@ inputs:
   dbsnp_vcf:
     type: File
     secondaryFiles: [.idx]
+  input_vcfs:
+    type:
+      type: array
+      items: File
+      inputBinding:
+        prefix: -V
+    secondaryFiles: [.tbi]
+    inputBinding:
+      position: 1
 outputs:
   variant_filtered_vcf:
     type: File
     outputBinding:
-      glob: "$(inputs.input_vcfs_list.path.split('/').pop().split('.')[0]).variant_filtered.vcf.gz"
+      glob: variant_filtered.vcf.gz
     secondaryFiles: [.tbi]
   sites_only_vcf:
     type: File
     outputBinding:
-      glob: "$(inputs.input_vcfs_list.path.split('/').pop().split('.')[0]).sites_only.variant_filtered.vcf.gz"
+      glob: sites_only.variant_filtered.vcf.gz
     secondaryFiles: [.tbi]

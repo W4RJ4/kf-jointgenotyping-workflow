@@ -69,7 +69,7 @@ steps:
     out:
       - id: variant_filtered_vcf
       - id: sites_only_vcf
-    run: "../tools/gatk_import_genotype_filtergvcf_merge.cwl"
+    run: "../tools/gatk_import_genotype_filtergvcf.cwl"
     label: gatk_import_genotype_filtergvcf_merge
     scatter:
     - interval
