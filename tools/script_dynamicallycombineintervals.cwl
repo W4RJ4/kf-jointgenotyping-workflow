@@ -10,7 +10,7 @@ baseCommand:
 - "-c"
 arguments:
 - position: 0
-  valueFrom: |-
+  valueFrom: >-
     def parse_interval(interval):
         colon_split = interval.split(":")
         chromosome = colon_split[0]
